@@ -23,22 +23,30 @@ class Game
   def switch_players!
     @current_player = (@current_player + 1) % 2
   end
+
+  attr_accessor :board
 end
 
 class Player
-  def initialize(game,symbol)
+  def initialize(game, symbol)
     @game = game
     @symbol = symbol
   end
 
+  attr_reader :symbol
+end
+
+class HumanPlayer < Player
   def play_turn
     puts "Choose a tile to play!"
     loop do
-      tile = gets.to_i
+      @tile = gets.to_i
 
       if is_valid_move?
+        game.board[@tile] = @marker
+      else
         puts "Please choose a valid tile!"
+      end
     end
-
   end
 end
