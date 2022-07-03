@@ -50,8 +50,8 @@ class Human < Player
     loop do
       @tile = gets.to_i
 
-      if is_valid_move?
-        game.board[@tile] = @marker
+      if valid_move?
+        @game.board[@tile] = @marker
       else
         puts "Please choose a valid tile!"
       end
@@ -61,6 +61,11 @@ class Human < Player
   def ask_name
     puts "What is your name?"
     @name = gets.chomp
+  end
+
+  def valid_move?
+    p @game.board[@tile]
+    return unless @game.board[@tile]
   end
 end
 
