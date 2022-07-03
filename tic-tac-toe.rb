@@ -7,17 +7,25 @@ class Game
   end
 
   def play
+    current_player.ask_name
+    opposing_player.ask_name
+
     loop do
       current_player.play_turn
 
-      if game_won?
-        return "#{current_player.name} wins!"
-      elsif board_full?
-        return 'Draw!'
-      end
+      return "#{current_player.name} wins!" if game_won?
+      return 'Draw!' if board_full?
 
       switch_players!
     end
+  end
+
+  def current_player
+    @players[@current_player]
+  end
+
+  def opposing_player
+    @players[(@current_player + 1) % 2]
   end
 
   def switch_players!
@@ -36,7 +44,7 @@ class Player
   attr_reader :symbol
 end
 
-class HumanPlayer < Player
+class Human < Player
   def play_turn
     puts "Choose a tile to play!"
     loop do
@@ -49,4 +57,11 @@ class HumanPlayer < Player
       end
     end
   end
+
+  def ask_name
+    puts "What is your name?"
+    @name = gets.chomp
+  end
 end
+
+Game.new(Human, Human).play
