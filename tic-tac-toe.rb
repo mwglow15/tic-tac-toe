@@ -121,6 +121,7 @@ end
 class Computer < Player
   def ask_name
     @name = "Computer"
+    puts "I am the Computer"
   end
   attr_reader :name
 
@@ -131,9 +132,6 @@ class Computer < Player
     end
   end
 
-  def ask_name
-    puts "I am the computer"
-  end
 end
 
 puts "How many human players? (1 or 2)"
