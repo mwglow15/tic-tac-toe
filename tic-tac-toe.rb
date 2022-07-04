@@ -1,9 +1,11 @@
 class Game
+  WINNING_MOVES = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
+
   def initialize(player_1_class, player_2_class)
     @board = Array.new(10)
 
     @current_player = 0
-    @players = [player_1_class.new(self, 'X'), player_2_class.new(self, 'X')]
+    @players = [player_1_class.new(self, 'X'), player_2_class.new(self, 'O')]
   end
 
   def play
@@ -11,13 +13,20 @@ class Game
     opposing_player.ask_name
 
     loop do
-      current_player.play_turn
+      play_turn(current_player)
 
-      return "#{current_player.name} wins!" if game_won?
+      return "wins!" if game_won?
+
       return 'Draw!' if board_full?
 
+      print_board
       switch_players!
     end
+  end
+
+  def play_turn(player)
+    placement = player.placement
+    @board[placement] = player.symbol
   end
 
   def current_player
@@ -30,6 +39,24 @@ class Game
 
   def switch_players!
     @current_player = (@current_player + 1) % 2
+  end
+
+  def print_board
+    p @board
+  end
+
+  def game_won?
+    WINNING_MOVES.any? do |move|
+      move.all? { |space| @board[space] == current_player.symbol }
+    end
+  end
+
+  def board_full?
+    if (1..9).select { |position| @board[position].nil? }
+      false
+    else
+      true
+    end
   end
 
   attr_accessor :board
@@ -45,16 +72,14 @@ class Player
 end
 
 class Human < Player
-  def play_turn
+  def placement
     puts "Choose a tile to play!"
     loop do
-      @tile = gets.to_i
+      tile = gets.chomp.to_i
 
-      if valid_move?
-        @game.board[@tile] = @marker
-      else
-        puts "Please choose a valid tile!"
-      end
+      return tile if valid_move?(tile)
+
+      puts "Please choose a valid tile!"
     end
   end
 
@@ -63,10 +88,11 @@ class Human < Player
     @name = gets.chomp
   end
 
-  def valid_move?
-    p @game.board[@tile]
-    return unless @game.board[@tile]
+  def valid_move?(tile)
+    return true unless @game.board[tile]
   end
+
+  attr_reader :name
 end
 
 Game.new(Human, Human).play
