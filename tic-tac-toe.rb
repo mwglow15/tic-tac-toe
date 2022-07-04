@@ -15,9 +15,13 @@ class Game
     loop do
       play_turn(current_player)
 
-      return "wins!" if game_won?
-
-      return 'Draw!' if board_full?
+      if game_won?
+         puts "#{current_player.name} wins!"
+         return
+      elsif board_full?
+        puts "Draw!"
+        return
+      end
 
       print_board
       switch_players!
@@ -42,7 +46,20 @@ class Game
   end
 
   def print_board
-    p @board
+    column_div = "|"
+    row_div = "--+--+--"
+
+    (1..9).each do |index|
+      if @board[index].nil?
+        puts index
+      else
+        puts @board[index]
+      end
+        if index % 3 == 0
+        
+        end
+      end
+    end
   end
 
   def game_won?
