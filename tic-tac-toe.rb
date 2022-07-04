@@ -12,6 +12,7 @@ class Game
     current_player.ask_name
     opposing_player.ask_name
 
+    print_board
     loop do
       play_turn(current_player)
       print_board
@@ -118,9 +119,14 @@ class Human < Player
 end
 
 class Computer < Player
+  def ask_name
+    @name = "Computer"
+  end
+  attr_reader :name
+
   def placement
     loop do
-      tile = rand(8) + 1
+      tile = rand(1..9)
       return tile if valid_move?(tile)
     end
   end
@@ -130,4 +136,11 @@ class Computer < Player
   end
 end
 
-Game.new(Human, Computer).play
+puts "How many human players? (1 or 2)"
+
+num_players = gets.chomp.to_i
+if num_players == 1
+  Game.new(Human, Computer).play
+else
+  Game.new(Human, Human).play
+end
