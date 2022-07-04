@@ -14,16 +14,16 @@ class Game
 
     loop do
       play_turn(current_player)
+      print_board
 
       if game_won?
-         puts "#{current_player.name} wins!"
-         return
+        puts "#{current_player.name} wins!"
+        return
       elsif board_full?
         puts "Draw!"
         return
       end
 
-      print_board
       switch_players!
     end
   end
@@ -47,19 +47,24 @@ class Game
 
   def print_board
     column_div = "|"
-    row_div = "--+--+--"
+    row_div = "--+---+--"
+    display_board = []
 
     (1..9).each do |index|
       if @board[index].nil?
-        puts index
+        display_board[index-1] = index
       else
-        puts @board[index]
-      end
-        if index % 3 == 0
-        
-        end
+        display_board[index-1] = @board[index]
       end
     end
+
+    puts nil
+    puts "#{display_board[0]} #{column_div} #{display_board[1]} #{column_div} #{display_board[2]}"
+    puts row_div
+    puts "#{display_board[3]} #{column_div} #{display_board[4]} #{column_div} #{display_board[5]}"
+    puts row_div
+    puts "#{display_board[6]} #{column_div} #{display_board[7]} #{column_div} #{display_board[8]}"
+    puts nil
   end
 
   def game_won?
@@ -85,6 +90,10 @@ class Player
     @symbol = symbol
   end
 
+  def valid_move?(tile)
+    return true unless @game.board[tile]
+  end
+
   attr_reader :symbol
 end
 
@@ -105,11 +114,20 @@ class Human < Player
     @name = gets.chomp
   end
 
-  def valid_move?(tile)
-    return true unless @game.board[tile]
-  end
-
   attr_reader :name
 end
 
-Game.new(Human, Human).play
+class Computer < Player
+  def placement
+    loop do
+      tile = rand(8) + 1
+      return tile if valid_move?(tile)
+    end
+  end
+
+  def ask_name
+    puts "I am the computer"
+  end
+end
+
+Game.new(Human, Computer).play
